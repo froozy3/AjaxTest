@@ -10,6 +10,9 @@ SessionLocal = get_db()
 @app.post("/setStatus")
 def create(status: str, session: SessionLocal = Depends(get_db)):
     existing_status = session.query(Status).filter(Status.status == status).first()
+    empty_status = status.strip()
+    if not empty_status:
+        raise HTTPException(status_code=422, detail="Status cannot be empty")
 
     if existing_status:
         raise HTTPException(status_code=422, detail="Such a status already exists")
